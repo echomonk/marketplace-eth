@@ -3,8 +3,13 @@ const defaultTheme = require("tailwindcss/defaultTheme")
 
 
 module.exports = {
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  safelist: [
+    {
+      pattern: /bg-/,
+      variants: ['lg', 'hover', 'focus', 'lg:hover'],
+    }
+  ],
   theme: {
     screens: {
       "xs": "475px",
