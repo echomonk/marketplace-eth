@@ -8,7 +8,10 @@ module.exports = {
     {
       pattern: /bg-/,
       variants: ['lg', 'hover', 'focus', 'lg:hover'],
-    }
+    },
+    {
+      pattern: /text-/,
+    },
   ],
   theme: {
     screens: {
