@@ -5,6 +5,18 @@ const { catchRevert } = require("./utils/exceptions")
 // Mocha - testing framework
 // Chai - assertion JS library
 
+const getBalance = async address => web3.eth.getBalance(address)
+const toBN = value => web3.utils.toBN(value)
+
+const getGas = async result => {
+  const tx = await web3.eth.getTransaction(result.tx)
+  const gasUsed = toBN(result.receipt.gasUsed)
+  const gasPrice = toBN(tx.gasPrice)
+  const gas= gasUsed.mul(gasPrice)
+
+  return gas
+}
+
 contract("CourseMarketplace", accounts => {
 
   const courseId = "0x00000000000000000000000000003130"
@@ -157,12 +169,31 @@ contract("CourseMarketplace", accounts => {
     })
     
     it("should be ABLE to repurchase with original buyer", async () =>{
-      await _contract.repurchaseCourse(courseHash2, {from: buyer, value})
+      const beforeTxBuyerBalance = await getBalance(buyer)
+      const beforeTxContractBalance = await getBalance(_contract.address)
+
+      const result = await _contract.repurchaseCourse(courseHash2, {from: buyer, value})
+
+      const afterTxBuyerBalance = await getBalance(buyer)
+      const afterTxContractBalance = await getBalance(_contract.address)
+
       const course = await _contract.getCourseByHash(courseHash2)
       const expectedState = 0
+      const gas = await getGas(result)
 
       assert.equal(course.state, expectedState, "Course is NOT purchased state!")
       assert.equal(course.price, value, `Course price is NOT equal to ${value}`)
+
+      assert.equal(
+        toBN(beforeTxBuyerBalance).sub(toBN(value)).sub(gas).toString(),
+        afterTxBuyerBalance,
+        "Client balance is not correct!" )
+      
+      assert.equal(
+        toBN(beforeTxContractBalance).add(toBN(value)).toString(),
+        afterTxContractBalance,
+        "Contract balance is not correct!" )
+      
     })
 
     it("should NOT be able to repurchase purchased course", async () =>{
