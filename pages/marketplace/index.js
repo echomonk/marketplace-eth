@@ -1,33 +1,30 @@
 import { CourseCard, CourseList } from "@components/ui/course"
 import { BaseLayout } from "@components/ui/layout"
 import { getAllCourses } from "@content/courses/fetcher"
-import { useWalletInfo } from "@components/hooks/web3"
-import { Button, Loader } from "@components/ui/common"
-import { OrderModal } from "@components/ui/order/modal"
+import { useOwnedCourses, useWalletInfo } from "@components/hooks/web3"
+import { Button, Loader, Message } from "@components/ui/common"
+import { OrderModal } from "@components/ui/order"
 import { useState } from "react"
 import { MarketHeader } from "@components/ui/marketplace"
 import { useWeb3 } from "@components/providers"
 
 export default function Marketplace({courses}) {
   const { web3, contract, requireInstall } = useWeb3()
-  const [ selectedCourse, setSelectedCourse ] = useState(null)
   const { hasConnectedWallet, isConnecting, account } = useWalletInfo()
+  const { ownedCourses } = useOwnedCourses(courses, account.data)
+  const [selectedCourse, setSelectedCourse] = useState(null)
 
   const purchaseCourse = async order => {
     const hexCourseId = web3.utils.utf8ToHex(selectedCourse.id)
- 
     const orderHash = web3.utils.soliditySha3(
       { type: "bytes16", value: hexCourseId },
-      { type: "address", value: account.data}
+      { type: "address", value: account.data }
     )
-  
     const emailHash = web3.utils.sha3(order.email)
-  
     const proof = web3.utils.soliditySha3(
       { type: "bytes32", value: emailHash },
       { type: "bytes32", value: orderHash }
     )
-
 
     const value = web3.utils.toWei(String(order.price))
 
@@ -41,20 +38,19 @@ export default function Marketplace({courses}) {
       console.error("Purchase course: Operation has failed.")
     }
   }
-    
+
   return (
     <>
-      <MarketHeader/>
+      <MarketHeader />
       <CourseList
         courses={courses}
       >
-       { course =>
-        <CourseCard 
-          key={course.id} 
+      {course =>
+        <CourseCard
+          key={course.id}
           course={course}
           disabled={!hasConnectedWallet}
           Footer={() => {
-            
             if (requireInstall) {
               return (
                 <Button
@@ -75,25 +71,62 @@ export default function Marketplace({courses}) {
               )
             }
 
-            return (
-                <Button 
-                  onClick={() => setSelectedCourse(course)}
-                  disabled={!hasConnectedWallet}
-                  variant="lightPurple">
-                  Purchase
-                </Button>
+            if (!ownedCourses.hasInitialResponse) {
+              return (
+                <div style={{height: "50px"}}></div>
               )
             }
+
+            const owned = ownedCourses.lookup[course.id]
+
+            if (owned) {
+              return (
+                <>
+                <Button
+                  disabled={true}
+                  variant="green">
+                  Owned
+                </Button>
+                <div className="mt-1">
+                  { owned.state === "activated" &&
+                    <Message>
+                      Activated
+                    </Message>
+                  }
+                  { owned.state === "deactivated" &&
+                    <Message type="danger">
+                      Deactivated
+                    </Message>
+                  }
+                  { owned.state === "purchased" &&
+                    <Message type="warning">
+                      Waiting for Activation
+                    </Message>
+                  }
+                </div>
+                </>
+              )
+            }
+
+
+            return (
+              <Button
+                onClick={() => setSelectedCourse(course)}
+                disabled={!hasConnectedWallet}
+                variant="lightPurple">
+                Purchase
+              </Button>
+            )}
           }
-          />
-        } 
-      </CourseList> 
+        />
+      }
+      </CourseList>
       { selectedCourse &&
-      <OrderModal
-        course={selectedCourse}
-        onSubmit={purchaseCourse}
-        onClose={() => setSelectedCourse(null)}
-      />
+        <OrderModal
+          course={selectedCourse}
+          onSubmit={purchaseCourse}
+          onClose={() => setSelectedCourse(null)}
+        />
       }
     </>
   )
