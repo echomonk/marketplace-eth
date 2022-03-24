@@ -16,7 +16,7 @@ module.exports = {
           mnemonic: {
             phrase: keys.MNEMONIC
           },
-          providerOrUrl: `https://ropsten.infura.io/v3/${keys.INFURA_PROJECT_ID}`,
+          providerOrUrl: `wss://ropsten.infura.io/ws/v3/${keys.INFURA_PROJECT_ID}`,
           addressIndex: 0
         }),
       network_id: 3,
@@ -37,3 +37,6 @@ module.exports = {
 
 // transaction hash: 0x136e2917b15beb5f44467fe44892a325c6c3ee346bd8d29ae280e7b17211cc35
 // contract address: 0x4Aa288Ab3F9115c23F387D88e811fA436800e77F
+
+// NEXT_PUBLIC_TARGET_CHAIN_ID=1337
+// NEXT_PUBLIC_NETWORK_ID=5777
