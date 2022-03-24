@@ -7,7 +7,7 @@ import { OrderModal } from "@components/ui/order"
 import { useState } from "react"
 import { MarketHeader } from "@components/ui/marketplace"
 import { useWeb3 } from "@components/providers"
-import { toast } from 'react-toastify'
+import { withToast } from "@utils/toast"
 
 export default function Marketplace({courses}) {
   const { web3, contract, requireInstall } = useWeb3()
@@ -32,9 +32,9 @@ export default function Marketplace({courses}) {
         { type: "bytes32", value: emailHash },
         { type: "bytes32", value: orderHash }
       )
-        _purchaseCourse(hexCourseId, proof, value)
+      withToast(_purchaseCourse(hexCourseId, proof, value))
      } else {
-       _repurchaseCourse(orderHash, value)
+      withToast(_repurchaseCourse(orderHash, value))
     }
   }
 
@@ -44,9 +44,10 @@ export default function Marketplace({courses}) {
           hexCourseId,
           proof
         ).send({from: account.data, value})
-        console.log(result)
-      } catch {
-        console.error("Purchase course: Operation has failed.")
+
+        return result
+      } catch (error) {
+        throw new Error(error.messsage)
       }
     }
 
@@ -55,48 +56,16 @@ export default function Marketplace({courses}) {
         const result = await contract.methods.repurchaseCourse(
           courseHash
         ).send({from: account.data, value})
-        console.log(result)
-      } catch {
-        console.error("Purchase course: Operation has failed.")
+        
+        return result
+      } catch (error) {
+        throw new Error(error.messsage)
       }
     }
-
-  const notify = () => {
-    // const resolveWithSomeData = new Promise(resolve => setTimeout(() => resolve("world"), 3000));
-    const resolveWithSomeData = new Promise(
-      (resolve, reject) => setTimeout(() => reject(new Error("Some Error")), 3000))
-    toast.promise(
-        resolveWithSomeData,
-        {
-          pending: {
-            render(){
-              return "I'm loading"
-            },
-            icon: false,
-          },
-          success: {
-            render({data}){
-              return `Hello ${data}`
-            },
-            // other options
-            icon: "🟢",
-          },
-          error: {
-            render({data}){
-              // When the promise reject, data will contains the error
-              return <div>{data.message ?? "Transaction has failed"}</div>
-            }
-          }
-        }
-    )
-  }
   
   return (
     <>
       <MarketHeader />
-      <Button onClick={notify}>
-        Notify
-      </Button>
       <CourseList
         courses={courses}
       >
