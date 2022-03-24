@@ -41,7 +41,7 @@ export const withToast = (promise) => {
       },
       error: {
         render({data}){
-          // When the promise reject, data will contains the error
+          // When the promise reject, data will contain the error
           return <div>{data.message ?? "Transaction has failed"}</div>
         }
       }

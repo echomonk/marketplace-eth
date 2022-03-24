@@ -46,8 +46,8 @@ export default function Marketplace({courses}) {
         ).send({from: account.data, value})
 
         return result
-      } catch (error) {
-        throw new Error(error.messsage)
+      } catch(error) {
+        throw new Error(error.message)
       }
     }
 
@@ -56,10 +56,10 @@ export default function Marketplace({courses}) {
         const result = await contract.methods.repurchaseCourse(
           courseHash
         ).send({from: account.data, value})
-        
+
         return result
-      } catch (error) {
-        throw new Error(error.messsage)
+      } catch(error) {
+        throw new Error(error.message)
       }
     }
   
