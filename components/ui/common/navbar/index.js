@@ -26,7 +26,7 @@ export default function Navbar() {
                   Marketplace
                 </a>
               </ActiveLink>
-              <ActiveLink href="/blogs" >
+              <ActiveLink href="/marketplace" >
                 <a
                   className="font-medium mr-8 text-gray-500 hover:text-gray-900">
                   Blogs
@@ -34,7 +34,7 @@ export default function Navbar() {
               </ActiveLink>
             </div>
             <div className="text-center">
-              <ActiveLink href="/wishlist" >
+              <ActiveLink href="/marketplace" >
                 <a
                   className="font-medium sm:mr-8 mr-1 text-gray-500 hover:text-gray-900">
                   Wishlist
