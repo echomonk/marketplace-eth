@@ -180,8 +180,6 @@ export default function Marketplace({courses}) {
                   </>
                 )
               }
-
-
               return (
                 <Button
                   size = "sm"
