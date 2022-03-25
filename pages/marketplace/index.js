@@ -135,7 +135,10 @@ export default function Marketplace({courses}) {
                     variant="white"
                     disabled={true}
                     size="sm">
-                    Loading State...
+                    { hasConnectedWallet ? 
+                      "Loading State..." 
+                      : "Connect"
+                    }
                   </Button>
                 )
               }
@@ -197,19 +200,19 @@ export default function Marketplace({courses}) {
             }
           />
         )}
-      }
-      </CourseList>
-      { selectedCourse &&
-        <OrderModal
-          course={selectedCourse}
-          isNewPurchase={isNewPurchase}
-          onSubmit={(formData, course) => {
-            purchaseCourse(formData, course)
-            cleanupModal()
-          }}
-          onClose={cleanupModal}
-        />
-      }
+        }
+        </CourseList>
+        { selectedCourse &&
+          <OrderModal
+            course={selectedCourse}
+            isNewPurchase={isNewPurchase}
+            onSubmit={(formData, course) => {
+              purchaseCourse(formData, course)
+              cleanupModal()
+            }}
+            onClose={cleanupModal}
+          />
+        }
     </>
   )
 }

@@ -12,6 +12,7 @@ const _isEmpty = data => {
   )
 }
 
+
 const enhanceHook = swrRes => {
   const { data, error } = swrRes
   const hasInitialResponse = !!(data || error)
@@ -38,30 +39,30 @@ export const useAccount = () => {
   }
 }
 
+export const useAdmin = ({redirectTo}) => {
+  const { account } = useAccount()
+  const { requireInstall } = useWeb3()
+  const router = useRouter()
+
+  useEffect(() => {
+    if ((
+      requireInstall ||
+      account.hasInitialResponse && !account.isAdmin) ||
+      account.isEmpty) {
+
+      router.push(redirectTo)
+    }
+  }, [account])
+
+  return { account }
+}
+
 export const useOwnedCourses = (...args) => {
   const swrRes = enhanceHook(useHooks(hooks => hooks.useOwnedCourses)(...args))
 
   return {
     ownedCourses: swrRes
   }
-}
-
-export const useAdmin = ({redirectTo}) => {
-  const { account } = useAccount()
-  const { requireInstall } = useWeb3()
-  const router  = useRouter()
-
-  useEffect(() => {
-    if ((
-        requireInstall || account.hasInitialResponse && !account.isAdmin) ||
-        account.isEmpty) {
-
-        router.push(redirectTo)
-      }
-  }, [account])
-
-    return { account }
-
 }
 
 export const useOwnedCourse = (...args) => {
@@ -84,9 +85,9 @@ export const useWalletInfo = () => {
   const { account } = useAccount()
   const { network } = useNetwork()
 
-  const isConnecting = 
-    !account.hasInitialResponse &&
-    !network.hasInitialResponse 
+  const isConnecting =
+   !account.hasInitialResponse &&
+   !network.hasInitialResponse
 
   return {
     account,
