@@ -1,6 +1,6 @@
-A marketplace dApp. This was my first learning project.
+A [marketplace dApp](https://marketplace-eth-one.vercel.app/). This was my first learning project.
 
-[Link to marketplace dApp](https://marketplace-eth-one.vercel.app/)
+
 
 <img width="1679" alt="Screen Shot 2022-04-17 at 13 13 21" src="https://user-images.githubusercontent.com/99912633/163710396-983b44bf-3ed8-4091-9770-ecbf4d02b2c5.png">
 
