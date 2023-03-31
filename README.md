@@ -1,4 +1,4 @@
-A [marketplace dApp](https://marketplace-eth-one.vercel.app/). This was my first learning project.
+A [marketplace dApp](https://marketplace-eth-one.vercel.app/). My first learning project.
 
 
 
